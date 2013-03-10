@@ -43,7 +43,7 @@ if ACF then
 
 	local old_ACF_RoundImpact = ACF_RoundImpact 
 	function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
-		if Hitpos:InSafeZone() then return {} end 
+		if HitPos:InSafeZone() then return {} end 
 
 		old_ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
 	end 

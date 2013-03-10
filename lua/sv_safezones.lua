@@ -210,7 +210,7 @@ hook.Add( "PlayerSpawn", "SafeZone_CustomSpawn", playerSpawn )
 
 
 -- Think: check if a player is outside the zone and in god/noclip
-local function think()
+local function tick()
 	for k,v in pairs( player.GetAll() ) do
 		if v:InSafeZone() then continue end 
 		if v:IsAdmin() then continue end 
@@ -238,7 +238,7 @@ local function think()
 	end
 
 end
-hook.Add( "Think", "SafeZone_Think", think )
+hook.Add( "Tick", "SafeZone_Think", tick )
 
 
 --[[-------------------------------------
