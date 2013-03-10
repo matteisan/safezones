@@ -205,7 +205,7 @@ local function think()
 		local oldpos  = v._oldpos
 		local newpos  = v:GetPos()
 
-		if oldpos ~= newpos then 
+		if oldpos ~= newpos and oldpos:InSafeZone() and not newpos:InSafeZone() then 
 			local oldclip = v._oldclip
 			local oldgod  = v._oldgod 
 			local newclip = v:GetMoveType() == MOVETYPE_NOCLIP
