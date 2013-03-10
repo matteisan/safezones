@@ -6,6 +6,7 @@
 local MAP = game.GetMap()
 local FilePath = "SafeZones/" .. MAP .. ".txt"
 local zData = zData or {}
+local Spawns = {}
 
 -- Load everything up
 local function init() 
@@ -62,8 +63,8 @@ end
 
 
 -- Check if in safezone
-local plymeta = FindMetaTable( "Entity" )
-function plymeta:InSafeZone()
+local entmeta = FindMetaTable( "Entity" )
+function entmeta:InSafeZone()
 	local pos = self:GetPos() 
 	for k,v in pairs( zData ) do
 		local min = v.corners[2]
@@ -77,6 +78,20 @@ function plymeta:InSafeZone()
 	return false 
 end
 
+-- Same as above, but for just vectors
+local vecmeta = FindMetaTable( "Vector" )
+function vecmeta:InSafeZone() 
+	for k,v in pairs( zData ) do
+		local min = v.corners[2]
+		local max = v.corners[5]
+
+		if inrange( pos, min, max ) then
+			return true 
+		end
+	end
+
+	return false 
+end 
 
 -- turns 200,0,0 to Vector(200,0,0)
 local function strToVec( s )
@@ -107,10 +122,6 @@ end
 
 -- Take damage: negate all damage if needed
 local function takeDamage( ent, dmgInfo )
-	local attacker = dmgInfo:GetAttacker()
-	if not attacker then return end 
-
-	local attpos = attacker:GetPos()
 	local entpos = ent:GetPos()
 
 	for k,v in pairs( zData ) do 
@@ -120,17 +131,9 @@ local function takeDamage( ent, dmgInfo )
 			dmgInfo:SetDamage(0)
 			return 
 		end
-
-		if not attacker then 
-			dmgInfo:SetDamage(0)
-			return 
-		end
-		
-		if not inrange( attpos, min, max ) then 
-			dmgInfo:SetDamage(0)
-			return 
-		end
 	end
+
+	return dmgInfo  
 end
 hook.Add( "EntityTakeDamage", "SafeZone_Dmg", takeDamage )
 
@@ -181,6 +184,18 @@ end
 hook.Add( "PlayerInitialSpawn", "SafeZone_Connect", playerInitialSpawn )
 
 
+-- PlayerSpawn: If doesn't have a custom spawn, use the maps.
+local function playerSpawn( ply )
+	if #Spawns < 1 then return end 
+	if ply.spawn then return end 
+
+	local i = math.random( 1, #Spawns )
+
+	ply:SetPos( Spawns[i] )
+end
+hook.Add( "PlayerSpawn", "SafeZone_CustomSpawn", playerSpawn )
+
+
 -- Think: check if a player is outside the zone and in god/noclip
 local function think()
 	for k,v in pairs( player.GetAll() ) do
@@ -211,7 +226,6 @@ local function think()
 
 end
 hook.Add( "Think", "SafeZone_Think", think )
-
 
 
 --[[-------------------------------------
@@ -263,3 +277,38 @@ local function removeSz_cmd( ply, cmd, args )
 end
 concommand.Add( "sz_remove", removeSz_cmd )
 
+
+util.AddNetworkString( "safezones_print" )
+local function listSz_cmd( ply, cmd, args )
+	if not ply:IsSuperAdmin() then return end 
+
+	net.Start( "safezones_print" )
+	net.Send( ply )
+end
+concommand.Add( "sz_list", listSz_cmd )
+
+
+local function newSpawn_cmd( ply, cmd, args )
+	if not ply:IsSuperAdmin() then return end 
+
+	local tr = ply:GetEyeTrace() 
+	if not tr.Hit then return end 
+
+	local c = #Spawns + 1
+	Spawns[c] = tr.HitPos 
+
+	save()
+
+	ULib.tsayColor( ply, nil, Color(0,255,0), "New spawn point placed!" )
+end 
+concommand.Add( "new_spawnpoint", newSpawn_cmd )
+
+
+local function clearSpawns_cmd( ply, cmd, args )
+	if not ply:IsSuperAdmin() then return end 
+
+	Spawns = {}
+
+	ULib.tsayColor( ply, nil, Color(0,255,0), "Spawn points cleared!" )
+end 
+concommand.Add( "clear_spawnpoints", clearSpawns_cmd )

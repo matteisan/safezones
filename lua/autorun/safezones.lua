@@ -10,7 +10,7 @@
 	that shortly. It was just a lazy fix of mine.
 
 	Commands: 
-		sz_new <id> <boxMax (vector)> <boxMin (vector)>;
+		sz_new <id> <boxMin (vector)> <boxMax (vector)>;
 		sz_remove <id>;
 		sz_list; -- Prints the map's safezones by ID
 
@@ -34,6 +34,7 @@ if SERVER then
 	AddCSLuaFile( "cl_safezones.lua" )
 
 	include( "sv_safezones.lua" )
+	include( "acf_compatibility.lua" )
 end
 
 -- Client file

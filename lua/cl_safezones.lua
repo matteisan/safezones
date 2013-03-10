@@ -76,3 +76,7 @@ net.Receive( "safezones_getzones", function()
 	print( "Received SafeZone data!" )
 	zData = net.ReadTable()
 end)
+
+net.Receive( "safezones_print", function() 
+	PrintTable( zData )
+end)

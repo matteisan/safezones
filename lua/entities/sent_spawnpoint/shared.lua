@@ -54,6 +54,11 @@ if SERVER then
 
 		activator.spawn = self:GetPos() + Vector(0,0,25)
 		activator:PrintMessage( 4, "Spawnpoint set!" )
+
+		local phys = self.Entity:GetPhysicsObject()
+		if phys then 
+			phys:EnableMotion( false )
+		end
 	end 
 
 	local function playerSelectSpawn( ply )
