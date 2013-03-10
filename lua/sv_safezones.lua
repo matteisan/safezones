@@ -142,7 +142,7 @@ hook.Add( "EntityTakeDamage", "SafeZone_Dmg", takeDamage )
 local function playerNoClip( ply )
 	if not ply:InSafeZone() then
 		if not ply:IsAdmin() then 
-			ULib.tsayError( ply, "You're in the safezone!" ) 
+			ULib.tsayError( ply, "You're in the killzone!" ) 
 			return false 
 		end 
 
@@ -160,7 +160,7 @@ local function ulibCommandCalled( ply, cmd, args )
 
 	if not ply:InSafeZone() then 
 		if not ply:IsAdmin() then
-			ULib.tsayError( ply, "You're in the safezone!" ) 
+			ULib.tsayError( ply, "You're in the killzone!" ) 
 			return false 
 		end 
 
