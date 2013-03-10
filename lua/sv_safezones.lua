@@ -215,25 +215,14 @@ local function tick()
 		if v:InSafeZone() then continue end 
 		if v:IsAdmin() then continue end 
 
-		local oldpos  = v._oldpos
-		local newpos  = v:GetPos()
+		local pos = v:GetPos()
+		if v:GetMoveType() == MOVETYPE_NOCLIP then
+			v:SetMoveType( MOVETYPE_WALK )
+		end
 
-		if oldpos ~= newpos and oldpos:InSafeZone() and not newpos:InSafeZone() then 
-			local oldclip = v._oldclip
-			local oldgod  = v._oldgod 
-			local newclip = v:GetMoveType() == MOVETYPE_NOCLIP
-			local newgod  = v.ULXHasGod 
-
-			if oldclip ~= newclip then 
-				v:SetMoveType( MOVETYPE_WALK )
-				v._oldclip = false 
-			end 
-
-			if oldgod ~= newgod then
-				v:GodDisable()
-				v.ULXHasGod = false 
-				v._oldgod = false 
-			end 
+		if v.ULXHasGod then 
+			v:GodDisable()
+			v.ULXHasGod = false 
 		end
 	end
 
