@@ -19,8 +19,13 @@ local function init()
 	if not file.Exists( FilePath, "DATA" ) then return end 
 
 	local data = file.Read( FilePath, "DATA" )
-
 	zData = util.JSONToTable( data )
+
+	-- Load spawns
+	local len = string.len( FilePath )
+	local str = string.sub( FilePath, 1, len - 4 ) .. "spawns"
+	local sp  = file.Read( str, "DATA" )
+	Spawns = util.JSONToTable( sp )
 
 	MsgC( Color(0,200,0), "SafeZone data for: " .. MAP .. " loaded!\n" )
 end 
@@ -104,6 +109,14 @@ end
 -- save data
 local function save()
 	file.Write( FilePath, util.TableToJSON( zData ) )
+end
+
+-- Save spawns
+local function saveSpawns()
+	local len = string.len( FilePath )
+	local str = string.sub( FilePath, 1, len - 4 ) .. "spawns"
+
+	file.Write( str, util.TableToJSON( Spawns ) )
 end
 
 
@@ -297,7 +310,7 @@ local function newSpawn_cmd( ply, cmd, args )
 	local c = #Spawns + 1
 	Spawns[c] = tr.HitPos 
 
-	save()
+	
 
 	ULib.tsayColor( ply, nil, Color(0,255,0), "New spawn point placed!" )
 end 
