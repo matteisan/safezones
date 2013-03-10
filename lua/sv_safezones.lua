@@ -215,7 +215,6 @@ local function tick()
 		if v:InSafeZone() then continue end 
 		if v:IsAdmin() then continue end 
 
-		local pos = v:GetPos()
 		if v:GetMoveType() == MOVETYPE_NOCLIP then
 			v:SetMoveType( MOVETYPE_WALK )
 		end
@@ -299,7 +298,7 @@ local function newSpawn_cmd( ply, cmd, args )
 	local c = #Spawns + 1
 	Spawns[c] = tr.HitPos 
 
-	
+	saveSpawns()
 
 	ULib.tsayColor( ply, nil, Color(0,255,0), "New spawn point placed!" )
 end 
