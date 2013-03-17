@@ -24,8 +24,8 @@ local function init()
 	-- Load spawns
 	local len = string.len( FilePath )
 	local str = string.sub( FilePath, 1, len - 4 ) .. "spawns"
-	local sp  = file.Read( str, "DATA" )
-	Spawns = util.JSONToTable( sp )
+	local sp  = file.Read( str, "DATA" ) or ""
+	Spawns = util.JSONToTable( sp ) or {} 
 
 	MsgC( Color(0,200,0), "SafeZone data for: " .. MAP .. " loaded!\n" )
 end 
@@ -71,7 +71,7 @@ end
 local entmeta = FindMetaTable( "Entity" )
 function entmeta:InSafeZone()
 	local pos = self:GetPos() 
-	for k,v in pairs( zData ) do
+	for k,v in pairs(zData) do 
 		local min = v.corners[2]
 		local max = v.corners[5]
 
@@ -85,12 +85,13 @@ end
 
 -- Same as above, but for just vectors
 local vecmeta = FindMetaTable( "Vector" )
-function vecmeta:InSafeZone() 
-	for k,v in pairs( zData ) do
+function vecmeta:InSafeZone()
+	for k,v in pairs(zData) do 
+		local v = zData[i]
 		local min = v.corners[2]
 		local max = v.corners[5]
 
-		if inrange( pos, min, max ) then
+		if inrange( self, min, max ) then
 			return true 
 		end
 	end
@@ -137,7 +138,7 @@ end
 local function takeDamage( ent, dmgInfo )
 	local entpos = ent:GetPos()
 
-	for k,v in pairs( zData ) do 
+	for k,v in pairs(zData) do 
 		local min = v.corners[2]
 		local max = v.corners[5]
 		if inrange( entpos, min, max ) then
@@ -211,7 +212,10 @@ hook.Add( "PlayerSpawn", "SafeZone_CustomSpawn", playerSpawn )
 
 -- Think: check if a player is outside the zone and in god/noclip
 local function tick()
-	for k,v in pairs( player.GetAll() ) do
+	local players = player.GetAll()
+	for i=1,#players do
+		local v = players[i]
+
 		if v:InSafeZone() then continue end 
 		if v:IsAdmin() then continue end 
 
@@ -309,6 +313,7 @@ local function clearSpawns_cmd( ply, cmd, args )
 	if not ply:IsSuperAdmin() then return end 
 
 	Spawns = {}
+	saveSpawns()
 
 	ULib.tsayColor( ply, nil, Color(0,255,0), "Spawn points cleared!" )
 end 

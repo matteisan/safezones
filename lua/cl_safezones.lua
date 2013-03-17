@@ -7,11 +7,11 @@ local zData = zData or {}
 
 -- Long retarded drawing stuff
 local function postDrawOpaqueRenderables()
-	for k,v in pairs( zData ) do 
+	for k,v in pairs(zData) do
 		local min = v.min 
 		local max = v.max 
 
-		local corners = v.corners 
+		local corners = v.corners or {}
 		-- Only commenting the first one, the other follow this.
 		cam.Start3D2D( max, Angle(0,0,0), 1 )
 			-- Box color

@@ -31,6 +31,7 @@
 
 -- Server files
 if SERVER then 
+	AddCSLuaFile()
 	AddCSLuaFile( "cl_safezones.lua" )
 
 	include( "sv_safezones.lua" )
