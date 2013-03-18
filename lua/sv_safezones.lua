@@ -5,6 +5,7 @@
 -- Globals
 local MAP = game.GetMap()
 local FilePath = "SafeZones/" .. MAP .. ".txt"
+local SpawnPath = "SafeZones/" .. MAP .. "spawns.txt"
 local zData = zData or {}
 local Spawns = {}
 
@@ -22,12 +23,16 @@ local function init()
 	zData = util.JSONToTable( data )
 
 	-- Load spawns
-	local len = string.len( FilePath )
-	local str = string.sub( FilePath, 1, len - 4 ) .. "spawns"
-	local sp  = file.Read( str, "DATA" ) or ""
+	local sp  = file.Read( SpawnPath, "DATA" ) or ""
 	Spawns = util.JSONToTable( sp ) or {} 
 
-	MsgC( Color(0,200,0), "SafeZone data for: " .. MAP .. " loaded!\n" )
+	if table.Count( zData ) ~= 0 then 
+		MsgC( Color(0,200,0), "SafeZone data for: " .. MAP .. " loaded!\n" )
+	end
+	
+	if table.Count( Spawns ) ~= 0 then 
+		MsgC( Color(0,200,0), "Spawn data for: " .. MAP .. " loaded!\n" )
+	end
 end 
 hook.Add( "Initialize", "SafeZone_Init", init )
 
@@ -114,10 +119,7 @@ end
 
 -- Save spawns
 local function saveSpawns()
-	local len = string.len( FilePath )
-	local str = string.sub( FilePath, 1, len - 4 ) .. "spawns"
-
-	file.Write( str, util.TableToJSON( Spawns ) )
+	file.Write( SpawnPath, util.TableToJSON( Spawns ) )
 end
 
 
