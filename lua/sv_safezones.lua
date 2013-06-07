@@ -3,9 +3,9 @@
 ]]-- 
 
 -- Globals
-local MAP = game.GetMap()
-local FilePath = "SafeZones/" .. MAP .. ".txt"
-local SpawnPath = "SafeZones/" .. MAP .. "spawns.txt"
+local MAP = string.lower(game.GetMap())
+local FilePath = "safezones/" .. MAP .. ".txt"
+local SpawnPath = "safezones/" .. MAP .. "spawns.txt"
 local zData = zData or {}
 local Spawns = {}
 
@@ -13,8 +13,8 @@ local Spawns = {}
 local function init() 
 	MsgC( Color(0,200,0), "SafeZones loaded!\n" )
 
-	if not file.IsDir( "SafeZones", "DATA" ) then
-		file.CreateDir( "SafeZones", "DATA" )
+	if not file.IsDir( "safezones", "DATA" ) then
+		file.CreateDir( "safezones", "DATA" )
 	end
 
 	if not file.Exists( FilePath, "DATA" ) then return end 
