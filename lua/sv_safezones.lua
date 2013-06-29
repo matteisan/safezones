@@ -157,7 +157,8 @@ hook.Add( "EntityTakeDamage", "SafeZone_Dmg", takeDamage )
 -- PlayerNoClip: Stop people from noclipping.
 local function playerNoClip( ply )
 	if not ply:InSafeZone() then
-		if not ply:IsAdmin() then 
+		-- Let >=respected noclip (this part is server-specific)
+		if not ply:CheckGroup("respected") then 
 			ULib.tsayError( ply, "You're in the killzone!" ) 
 			return false 
 		end 
