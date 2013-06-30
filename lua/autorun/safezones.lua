@@ -35,6 +35,7 @@ if SERVER then
 	AddCSLuaFile( "cl_safezones.lua" )
 
 	include( "sv_safezones.lua" )
+	include( "acf.lua" )
 end
 
 -- Client file
