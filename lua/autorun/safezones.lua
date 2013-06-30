@@ -35,11 +35,8 @@ if SERVER then
 	AddCSLuaFile( "cl_safezones.lua" )
 
 	include( "sv_safezones.lua" )
-<<<<<<< HEAD
-	include( "acf.lua" )
-=======
+	
 	include( "acf/server/safezones.lua" )
->>>>>>> Hopefully fixed loading ACF problem
 end
 
 -- Client file
