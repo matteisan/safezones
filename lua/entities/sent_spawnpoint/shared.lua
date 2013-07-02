@@ -22,7 +22,7 @@ if SERVER then
 		ent:Spawn()
 		ent:Activate()
 
-		ent.owner = ply 
+		self.owner = ply 
 
 		-- Normally I wouldn't use networking, but this is
 		-- the easiest possible way for the client to get it.
