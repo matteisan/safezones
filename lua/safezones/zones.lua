@@ -16,29 +16,27 @@ zonemeta = {
 	__call = function( _, ... ) return Zone( ... ) end 
 }
 
--- Not sure if the metatables in gmod allow __lt.
-function vecLessThan( v1, v2 )
-end 
 
 function ZONE:CalculateMinMax() 
 	local corners = self._corners
 	-- This is to make sure the values given are real corners to begin with.
-	local min = self._min 
+	local min = self._min  
 	local max = self._max
-
+	
 	for i=1,#corners do 
 		local c = corners[i]
 		min.x = c.x < min.x and c.x or min.x 
 		min.y = c.y < min.y and c.y or min.y
 		min.z = c.z < min.z and c.z or min.z 
-
+		
 		max.x = c.x > max.x and c.x or max.x 
 		max.y = c.y > max.y and c.y or max.y
 		max.z = c.z > max.z and c.z or max.z 
 	end 
-
+	
 	self._truemin = min 
 	self._truemax = max 
+	self:CalculateCorners()
 end 
 
 function ZONE:CalculateCorners()
