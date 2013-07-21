@@ -1,26 +1,24 @@
-SafeZones
-	
-	Desc: Scripts to give a map safezones, so builders can build,
-	and killers can kill in their respective areas. You can 
-	have different zones for different maps, this is made to make 
-	all that easier. Also comes with Custom Spawn Points
+-- Safezones -- 
+Addon to help out in Build/Kill servers 
+and to let builders build and killers kill.
 
-	Commands: 
-		sz_new <id> <boxMax (vector)> <boxMin (vector)>;
-		sz_remove <id>;
-		sz_list; -- Prints the map's safezones by ID
-		new_spawnpoint; 
-		clear_spawnpoints; 
 
-	Examples: 
-		sz_new MainSpawn 0,0,0 1000,1000,1000 
-		sz_remove MainSpawn
-		sz_list 
+Step by Step:
 
-	Data: 
-		Saved to: data/SafeZones/<map name> 
+1: Make sure you are super admin.
+2: Type safezone_new Name in console.
+3: Position markers to desired zone.
+4: Type safezone_finish Name in console.
+	- This part does all final calculations and 
+	- properly loads everything.
+5: Type safezones_save to save data.
 
-	Author: Adult
+Optional: 
+6: Type safezones_addspawn to add a spawnpoint where you are looking.
+7: Type safezones_clearspawns to clear all spawnpoints.
+8: safezone_remove Name to remove a safezone (be sure to safezones_save)
 
-	Thanks to: Awcmon for helping out and pretty much telling me 
-	how to do this.
+
+A GUI for this is in development. 
+
+For bug/request reports, go to http://github.com/matteisan/safezones

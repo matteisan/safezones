@@ -1,11 +1,11 @@
 "AddonInfo"
 {
-	"name"				"NPC Buyer"
-	"version"			"1"
-	"up_date"			"1/24/2013"
+	"name"				"Safezones"
+	"version"			"Git"
+	"up_date"			"7/21/2013"
 	"author_name"			"Adult"
 	"author_email"			"mattjeisan@gmail.com"
 	"author_url"			""
-	"info"				"Allows you to create NPCs that can buy specified entities from players."
+	"info"				"Addon to allow builders to build and killers to kill."
 	"override"			"0"
 }
