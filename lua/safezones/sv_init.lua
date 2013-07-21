@@ -98,7 +98,23 @@ function Zones.updateZones()
 	end
 end 
 
--- ------------------------------------ -- 
+
+function Zones.getZoneByName( name )
+	for i=1,#Zones.zones do 
+		if Zones.zones[i]:Name() == name then 
+			return Zones.zones 
+		end 
+	end 
+
+	return 
+end 
+
+
+function Zones.exists( name )
+	return Zones.getZoneByName( name )
+end 
+
+-- ---------------------------------- -- 
 -- --------- Data sending ------------- --
 -- ------------------------------------ -- 
 util.AddNetworkString( "zones_data" )
@@ -126,7 +142,7 @@ function Zones.saveData( ply )
 	local tbl = {}
 	tbl.spawns = Zones.spawns 
 	tbl.zones = {} 
-	
+
 	for k,v in pairs( Zones.zones ) do
 		table.insert( tbl.zones, v:ToTable() )
 	end
