@@ -27,12 +27,12 @@ if SERVER then
 		if cmd ~= "ulx goto" then return end
 
 		if not caller:InSafeZone() then
-			ULib.tsayError( ply, "You're not in a safezone!" )
+			ULib.tsayError( caller, "You're not in a safezone!" )
 			return false 
 		end 
 
 		if not target:InSafeZone() then 
-			ULib.tsayError( ply, target:Name() .. " is not in a safezone!" )
+			ULib.tsayError( caller, target:Name() .. " is not in a safezone!" )
 			return false 
 		end 
 	end )

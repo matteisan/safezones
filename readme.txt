@@ -21,4 +21,4 @@ Optional:
 
 A GUI for this is in development. 
 
-For bug/request reports, go to http://github.com/matteisan/safezones
+For bug/request reports, go to http://github.com/matteisan/safezones/issues
