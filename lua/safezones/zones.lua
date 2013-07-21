@@ -23,8 +23,8 @@ end
 function ZONE:CalculateMinMax() 
 	local corners = self._corners
 	-- This is to make sure the values given are real corners to begin with.
-	local min = Vector()
-	local max = Vector()
+	local min = self._min 
+	local max = self._max
 
 	for i=1,#corners do 
 		local c = corners[i]
