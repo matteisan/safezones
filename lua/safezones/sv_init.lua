@@ -41,7 +41,12 @@ local function init()
 		local oldzones = Zones.zones 
 		Zones.zones = {} 
 		for k,v in pairs( oldzones ) do 
-			local zone = MakeZoneFromTable( v )
+			local zone = Zone( v._name, v._min, v._max, v._corners ) 
+			zone._truemin = v._truemin 
+			zone._truemax = v._truemax 
+			zone._defclr = v._defclr 
+			zone._editing = false 
+
 			table.insert( Zones.zones, zone )
 		end
 	end
@@ -281,30 +286,6 @@ concommand.Add( "safezone_remove", function( ply, cmd, args )
 	end 
 end )
 
-concommand.Add( "safezones_setoption",  function( ply, _, args )
-	if not ply:IsSuperAdmin() then return end 
-
-	local zone = Zones.getZoneByName( args[1] )
-	if not zone then 
-		Zones.error( ply, args[1] .. " is not a valid zone." )
-		return 
-	end 
-
-	local opt = args[2]
-	local val = args[3]
-
-	zone[opt] = val 
-
-	Zones.success( ply, zone .. " option: " .. opt .. " to value: " .. val )
-end )
-
-concommand.Add( "safezones_setcolor", function( ply, _, args ) 
-	local zone = Zones.getZoneByName( args[1] )	
-	local r,g,b = args[2], args[3], args[4]
-	
-	zone:SetDefaultColor( r, g, b )
-end )
-
 concommand.Add( "safezones_addspawn", function( ply ) 
 	if not ply:IsSuperAdmin() then return end 
 
@@ -443,36 +424,6 @@ function entmeta:InSafeZone( name )
 
 	return false 
 end
-
-function entmeta:InACFZone( name )
-	local pos = self:GetPos() 
-
-	for i=1,table.Count(Zones.zones) do 
-		local zone = Zones.zones[i]
-		if not zone:GetACFSetting() then continue end 
-		if name ~= nil and zone:Name() ~= name then continue end 
-
-		if inrange( pos, zone._truemin, zone._truemax ) then
-			return true 
-		end 
-	end 
-
-	return false 
-end 
-
-function entmeta:GetZone()
-	local pos = self:GetPos()
-
-	for i=1,table.Count(Zones.zones) do
-		local zone = Zones.zones[i]
-
-		if inrange( pos, zone._truemin, zone._truemax ) then
-			return zone
-		end 
-	end 
-
-	return 
-end 
 
 local vecmeta = FindMetaTable( "Vector" )
 function vecmeta:InSafeZone( name ) 

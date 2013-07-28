@@ -23,14 +23,8 @@ end )
 -- Receiving the data for zones 
 net.Receive( "zones_data", function() 
 	local tbl = net.ReadTable() 
-	local zones = tbl.zones or {} 
+	Zones.zones = tbl.zones or {} 
 	Zones.spawns = tbl.spawns or {} 
-
-	-- Make zone from table data.
-	for k,v in pairs( zones ) do
-		local zone = MakeZoneFromTable( v )
-		table.insert( Zones.zones, zone )
-	end 
 end )
 
 local function postDrawOpaqueRenderables() 
@@ -39,7 +33,8 @@ local function postDrawOpaqueRenderables()
 	if #zones < 1 then return end 
 	
 	for i=1,#zones do 
-		zones[i]:Draw()
+		-- zones[i]:Draw()
+		DrawZone( zones[i] )
 	end 
 end 
 
