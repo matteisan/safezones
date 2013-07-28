@@ -70,8 +70,8 @@ function ZONE:GetMax()
 	return self._max 
 end 
 
-function ZONE:GetDefaultColor() 
-	return self._defclr 
+function ZONE:GetColor() 
+	return self._clr 
 end 
 
 function ZONE:SetMin( v )
@@ -82,8 +82,8 @@ function ZONE:SetMax( v )
 	self._max = v 
 end 
 
-function ZONE:SetDefaultColor( color )
-	self._defclr = color 
+function ZONE:SetColor( color )
+	self._clr = color 
 end 
 
 function ZONE:Editing()
@@ -94,6 +94,14 @@ function ZONE:SetEditing( bool )
 	self._editing = bool 
 end 
 
+function ZONE:SetACFSetting( bool )
+	self._acf = bool 
+end 
+
+function ZONE:GetACFSetting()
+	return self._acf 
+end 
+
 function ZONE:ToTable() 
 	return {
 		_min = self._min,
@@ -101,12 +109,13 @@ function ZONE:ToTable()
 		_truemin = self._truemin,
 		_truemax = self._truemax,
 		_corners = self._corners,
-		_defclr = self._defcl,
-		_name = self._name 
+		_clr = self._clr,
+		_name = self._name,  
+		_acf = self._acf
 	}
 end 
 
--- args: Name of zone, Corner table, Min vec, max vec
+-- args: Name of zone, Min vec, max vec, Corner table
 function ZONE.new( name, min, max, corners )
 	local data = {
 		_name = name or "", 
@@ -116,7 +125,8 @@ function ZONE.new( name, min, max, corners )
 		_truemin = min or Vector(),
 		_truemax = max or Vector(),
 		_editing = false,
-		_defclr = Color( 255, 255, 255 )
+		_clr = Color( 255, 255, 255 ),
+		_acf = false 
 	}
 
 	setmetatable(data,zonemeta)
@@ -131,33 +141,24 @@ function b_tonumber( bool )
 	return (bool == true) and 1 or -1
 end 
 
--- Methods not working clientside...???
--- function ZONE:Draw()
-function DrawZone( zone ) 
-	--[[
+function ZONE:Draw()
 	local corners = self._corners 
 	local min = self._min 
 	local max = self._max 
-	--]]
-
-	---[[
-	local corners = zone._corners
-	local min = zone._min
-	local max = zone._max
-	--]]
+	local clr = self._clr 
+	local r, g, b = clr.r, clr.g, clr.b
 	
 	cam.Start3D2D( max, Angle(0,0,0), 1 ) 
-		surface.SetDrawColor( Color(0,150,0,75) )
+		surface.SetDrawColor( Color(r, g, b, 75) )
 		
 		local x = ( b_tonumber(max.x < corners[4].x) * max:Distance(corners[4]) )
 		local y = ( b_tonumber(max.y > corners[3].y) * max:Distance(corners[3]) )
 		
 		surface.DrawRect( 0, 0, x, y )
-		
 	cam.End3D2D()
 	
 	cam.Start3D2D( max, Angle(0,0,90), 1 )
-		surface.SetDrawColor( Color(0,175,0,75) )
+		surface.SetDrawColor(  Color(r, g, b, 100) )
 		
 		local x = ( b_tonumber(max.x < corners[4].x) * max:Distance(corners[4]) )
 		local y = ( b_tonumber(max.z > corners[2].z) * max:Distance(corners[2]) )
@@ -166,7 +167,7 @@ function DrawZone( zone )
 	cam.End3D2D()
 	
 	cam.Start3D2D( max, Angle(90,0,0), 1 )
-		surface.SetDrawColor( Color(0,200,0,75) )
+		surface.SetDrawColor( Color(r, g, b, 125) )
 		
 		local x = ( b_tonumber(max.z > corners[2].z) * max:Distance(corners[2]) )
 		local y = ( b_tonumber(max.y > corners[3].y) * max:Distance(corners[3]) )
@@ -175,7 +176,7 @@ function DrawZone( zone )
 	cam.End3D2D()
 	
 	cam.Start3D2D( min, Angle(0,0,0), 1 ) 
-		surface.SetDrawColor( Color(0,150,0,75) )
+		surface.SetDrawColor( Color(r, g, b, 75) )
 		
 		local x = ( b_tonumber(min.x < corners[7].x) * min:Distance(corners[7]) )
 		local y = ( b_tonumber(min.y > corners[6].y) * min:Distance(corners[6]) )
@@ -184,7 +185,7 @@ function DrawZone( zone )
 	cam.End3D2D()
 	
 	cam.Start3D2D( min, Angle(0,0,90), 1 ) 
-		surface.SetDrawColor( Color(0,175,0,75) )
+		surface.SetDrawColor( Color(r, g, b, 100) )
 		
 		local x = ( b_tonumber(min.x < corners[7].x) * min:Distance(corners[7]) )
 		local y = ( b_tonumber(min.z > corners[5].z) * min:Distance(corners[5]) )
@@ -193,7 +194,7 @@ function DrawZone( zone )
 	cam.End3D2D()
 	
 	cam.Start3D2D( min, Angle(90,0,0), 1 ) 
-		surface.SetDrawColor( Color(0,200,0,75) )
+		surface.SetDrawColor( Color(r, g, b, 125) )
 		
 		local x = ( b_tonumber(min.z > corners[5].z) * min:Distance(corners[5]) )
 		local y = ( b_tonumber(min.y > corners[6].y) * min:Distance(corners[6]) )
@@ -218,3 +219,12 @@ local function inrange( v, min, max )
 	return true 
 end 
 
+function MakeZoneFromTable( tbl )
+	local zone = Zone( tbl._name, tbl._min, tbl._max, tbl._corners ) 
+
+	for k,v in pairs( tbl ) do 
+		zone[k] = v 
+	end 
+
+	return zone 
+end 
