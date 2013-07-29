@@ -8,9 +8,9 @@ TODO:
 	- Optimize zone checking 
 	- Developer support 
 	- Finish GUI
-	- Cleaner console support
-	- Get methods working clientside
-	- Fancy readme
-	- Allow color changing
+	v Cleaner console support
+	v Get methods working clientside
+	v Fancy readme
+	v Allow color changing
 	v Built in ACF support
 	v Built in ULX support

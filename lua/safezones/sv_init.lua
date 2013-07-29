@@ -83,12 +83,7 @@ function Zones.updateZones()
 	local oldzones = Zones.zones 
 	Zones.zones = {} 
 	for k,v in pairs( oldzones ) do 
-		local zone = Zone( v._name, v._min, v._max, v._corners ) 
-		zone._truemin = v._truemin 
-		zone._truemax = v._truemax 
-		zone._clr = v._clr 
-		zone._editing = false 
-
+		local zone = MakeZoneFromTable( v )
 		table.insert( Zones.zones, zone )
 	end
 end 

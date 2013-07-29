@@ -94,25 +94,22 @@ function ZONE:SetEditing( bool )
 	self._editing = bool 
 end 
 
+-- Since handled with console, bool is really a number.
 function ZONE:SetACFSetting( bool )
-	self._acf = bool 
+	self.acf = bool 
 end 
 
 function ZONE:GetACFSetting()
-	return self._acf 
+	return self.acf 
 end 
 
 function ZONE:ToTable() 
-	return {
-		_min = self._min,
-		_max = self._max,
-		_truemin = self._truemin,
-		_truemax = self._truemax,
-		_corners = self._corners,
-		_clr = self._clr,
-		_name = self._name,  
-		_acf = self._acf
-	}
+	local tbl = {}
+	for k,v in pairs( self ) do 
+		tbl[k] = v 
+	end 
+
+	return v 
 end 
 
 -- args: Name of zone, Min vec, max vec, Corner table
@@ -125,8 +122,7 @@ function ZONE.new( name, min, max, corners )
 		_truemin = min or Vector(),
 		_truemax = max or Vector(),
 		_editing = false,
-		_clr = Color( 255, 255, 255 ),
-		_acf = false 
+		_clr = Color( 255, 255, 255 )
 	}
 
 	setmetatable(data,zonemeta)
