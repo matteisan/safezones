@@ -40,13 +40,6 @@ if SERVER then
 		owner.spawn = self:GetPos() + Vector(0,0,25)
 	end
 	
-	function ENT:OnRemove()
-		local owner = self.owner
-		if not owner then return end 
-
-		owner.spawn = nil
-	end
-	
 	function ENT:Use( activator, caller )
 		if not activator then return end
 		if not caller then return end 
