@@ -374,9 +374,6 @@ hook.Add( "PlayerInitialSpawn", "Safezones_FirstSpawn", playerInitialSpawn )
 
 local function playerSpawn( ply )
 	if #Zones.spawns < 1 then return end 
-	-- built in spawnpoint stuff
-	if ply.custom_spawn then return end 
-
 	local i = math.random( 1, #Zones.spawns )
 
 	ply:SetPos( Zones.spawns[i] + Vector(0,0,10) )
