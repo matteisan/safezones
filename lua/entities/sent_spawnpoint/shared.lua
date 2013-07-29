@@ -56,6 +56,10 @@ if SERVER then
 		activator:PrintMessage( 4, "Spawnpoint set!" )
 	end 
 
+	function ENT:OnRemove()
+		self.owner.spawn = nil 
+	end 
+
 	local function playerSelectSpawn( ply )
 		if not ply.spawn then return end 
 
