@@ -93,15 +93,7 @@ end
 function ZONE:SetEditing( bool ) 
 	self._editing = bool 
 end 
-
--- Since handled with console, bool is really a number.
-function ZONE:SetACFSetting( bool )
-	self.acf = bool 
-end 
-
-function ZONE:GetACFSetting()
-	return self.acf 
-end 
+ 
 
 function ZONE:ToTable() 
 	local tbl = {}
@@ -109,7 +101,7 @@ function ZONE:ToTable()
 		tbl[k] = v 
 	end 
 
-	return v 
+	return tbl
 end 
 
 -- args: Name of zone, Min vec, max vec, Corner table

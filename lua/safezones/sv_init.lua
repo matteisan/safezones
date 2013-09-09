@@ -8,6 +8,7 @@
 Zones = {}
 Zones.zones = {} 
 Zones.spawns = {}
+Zones.teleporters = {}
 Zones.edit = {}
 Zones.MAP = game.GetMap()
 
@@ -32,6 +33,7 @@ local function init()
 	local data = util.JSONToTable( file.Read( path, "DATA" ) )
 	Zones.zones = data.zones or {} 
 	Zones.spawns = data.spawns or {}
+	Zones.teleporters = data.teleporters or {}
 
 	if table.Count( Zones.zones ) ~= 0 then
 		MsgC( Color(200,200,0), "Zone data loaded for map: " .. Zones.MAP .. "!\n" )
@@ -50,7 +52,9 @@ local function init()
 		MsgC( Color(200,200,0), "Spawn data loaded for map: " .. Zones.MAP .. "!\n" )
 	end
 
-
+	if table.Count( Zones.teleporters ) ~= 0 then 
+		MsgC( Color(200,200,0), "Teleporter data loaded for map: " .. Zones.MAP .. "!\n" )
+	end
 end 
 hook.Add( "Initialize", "Safezones_init", init )
 
@@ -92,7 +96,7 @@ end
 function Zones.getZoneByName( name )
 	for i=1,#Zones.zones do 
 		if Zones.zones[i]:Name() == name then 
-			return Zones.zones 
+			return Zones.zones[i]
 		end 
 	end 
 
@@ -101,7 +105,7 @@ end
 
 
 function Zones.exists( name )
-	return Zones.getZoneByName( name )
+	return Zones.getZoneByName( name ) and true or false 
 end 
 
 -- ---------------------------------- -- 
@@ -132,6 +136,7 @@ function Zones.saveData( ply )
 	local tbl = {}
 	tbl.spawns = Zones.spawns 
 	tbl.zones = {} 
+	tbl.teleporters = {}
 
 	for k,v in pairs( Zones.zones ) do
 		-- Tave the table because JSON doesn't encode
@@ -139,7 +144,17 @@ function Zones.saveData( ply )
 		table.insert( tbl.zones, v:ToTable() )
 	end
 
-	file.Write( Zones.DATA_PATH, util.TableToJSON( Zones ) )
+	for k,v in pairs( Zones.teleporters ) do 
+		if not IsValid( v.ent ) then continue end 
+		table.insert( tbl.teleporters, { 
+			pos = v.ent:GetPos(), 
+			ang = v.ent:GetAngles(),
+			dest = v.ent.dest,
+			src = v.ent.src
+		})
+	end 
+
+	file.Write( Zones.DATA_PATH, util.TableToJSON( tbl ) )
 end
 concommand.Add( "safezones_save", Zones.saveData )	  
 
@@ -329,6 +344,42 @@ concommand.Add( "safezones_clearspawns", function( ply )
 	Zones.saveData( ply )
 end ) 
 
+concommand.Add( "safezone_newteleporter", function( ply, _, args ) 
+	if not ply:IsSuperAdmin() then return end 
+
+	local tr = ply:GetEyeTrace()
+	if not tr.Hit then return end 
+
+	local pos = tr.HitPos 
+	local ent = ents.Create( "sent_zoneteleporter" )
+		ent:SetPos( pos + Vector( 0, 0, 50 ) )
+		ent:Spawn()
+
+	ent.src = args[1]
+	ent:SetNetworkedString( "Source", args[1] )
+
+	ent.dest = args[2]
+	ent:SetNetworkedString( "Destination", args[2] )
+
+	for i=1,#Zones.zones do
+		local zone = Zones.zones[i] 
+		if zone:Name() == args[1] then 
+			print( zone:Name() .. " teleporter is: " .. tostring(ent) )
+			zone.teleporter = ent 
+			break
+		end 
+	end 
+
+	table.insert( Zones.teleporters, { 
+		ent = ent,
+		dest = ent.dest,
+		src = ent.src
+	})
+
+	Zones.success( ply, "Teleporter created with destination: " .. args[2] )
+end )
+
+
 -- ----------------------------------- --
 -- -------------- Hooks -------------- -- 
 -- ----------------------------------- -- 
@@ -410,6 +461,47 @@ local function tick()
 end 
 hook.Add( "Tick", "Safezones_Tick", tick )
 
+---[[
+-- Hacky method to get teleporters to spawn
+local function initPostEntity()
+	if table.Count( Zones.teleporters ) ~= 0 then 
+		local oldtp = Zones.teleporters 
+		Zones.teleporters = {}
+		for k,v in pairs( oldtp ) do 
+			local ent = ents.Create( "sent_zoneteleporter" )
+				ent:SetPos( v.pos )
+				ent:SetAngles( v.ang )
+				ent:Spawn()
+				ent:SetMoveType( MOVETYPE_NONE )
+
+			for i=1,#Zones.zones do 
+				local zone = Zones.zones[i]
+				if zone:Name() == v.dest then 
+					ent.src = src
+					ent:SetNetworkedString( "Source", src )
+
+					ent.dest = dest 
+					ent:SetNetworkedString( "Destination", dest )
+					
+					Zones.zones[i].teleporter = ent 
+					break
+				end 
+			end 
+
+			table.insert( Zones.teleporters, { 
+				ent = ent, 
+				src = v.src,
+				dest = v.dest
+			})
+		end 
+	end 
+
+	-- why do i need to send the data? the other hook should handle it.
+	Zones.sendData( ply )
+	hook.Remove( "PlayerInitialSpawn", "SafeZone_Tp" )
+end 
+hook.Add( "PlayerInitialSpawn", "SafeZone_Tp", initPostEntity )
+--]]
 
 -- returns true if 'v' is within the points 
 local function inrange( v, min, max )
@@ -443,22 +535,6 @@ function entmeta:InSafeZone( name )
 
 	return false 
 end
-
-function entmeta:InACFZone( name )
-	local pos = self:GetPos() 
-
-	for i=1,table.Count(Zones.zones) do 
-		local zone = Zones.zones[i]
-		if not zone:GetACFSetting() then continue end 
-		if name ~= nil and zone:Name() ~= name then continue end 
-
-		if inrange( pos, zone._truemin, zone._truemax ) then
-			return true 
-		end 
-	end 
-
-	return false 
-end 
 
 function entmeta:GetZone()
 	local pos = self:GetPos()

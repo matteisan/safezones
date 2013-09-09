@@ -10,9 +10,6 @@ Zones = {}
 Zones.zones = {}
 Zones.spawns = {}
 
-
-CreateClientConVar( "zones_drawzones", 1, true, false )
-
 -- Chat messages, I know like every major addon has one of these
 -- but I don't like having large dependencies.
 net.Receive( "zones_chat", function() 
@@ -43,4 +40,11 @@ local function postDrawOpaqueRenderables()
 	end 
 end 
 
-hook.Add( "PostDrawOpaqueRenderables", "zones_draw", postDrawOpaqueRenderables )
+CreateClientConVar( "zones_drawzones", 1, true, false )
+cvars.AddChangeCallback( "zones_drawzones", function() 
+	if GetConVarNumber( "zones_drawzones" ) then 
+		hook.Add( "PostDrawOpaqueEnderables", "sz_draw", postDrawOpaqueRenderables )
+	else 
+		hook.Remove( "PostDrawOpaqueEnderables", "sz_draw" )
+	end 
+end )

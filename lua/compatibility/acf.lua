@@ -1,3 +1,22 @@
+local entmeta = FindMetaTable("Entity")
+
+function entmeta:InACFZone( name )
+	local pos = self:GetPos() 
+
+	for i=1,table.Count(Zones.zones) do 
+		local zone = Zones.zones[i]
+		if not zone.acf then continue end 
+		if name ~= nil and zone:Name() ~= name then continue end 
+
+		if inrange( pos, zone._truemin, zone._truemax ) then
+			return true 
+		end 
+	end 
+
+	return false 
+end 
+
+
 if SERVER then 
 	hook.Add("ACF_BulletDamage","SafeZone_ACF", function( _, ent, _, _, _, inflictor, _, gun )
 		if ent:InACFZone() and not inflictor:InACFZone() then
