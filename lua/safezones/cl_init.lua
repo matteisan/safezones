@@ -41,10 +41,12 @@ local function postDrawOpaqueRenderables()
 end 
 
 CreateClientConVar( "zones_drawzones", 1, true, false )
-cvars.AddChangeCallback( "zones_drawzones", function() 
-	if GetConVarNumber( "zones_drawzones" ) then 
-		hook.Add( "PostDrawOpaqueEnderables", "sz_draw", postDrawOpaqueRenderables )
+hook.Add( "PostDrawOpaqueRenderables", "sz_draw", postDrawOpaqueRenderables )
+
+cvars.AddChangeCallback( "zones_drawzones", function( cvar, old, new ) 
+	if new ~= 0 then 
+		hook.Add( "PostDrawOpaqueRenderables", "sz_draw", postDrawOpaqueRenderables )
 	else 
-		hook.Remove( "PostDrawOpaqueEnderables", "sz_draw" )
+		hook.Remove( "PostDrawOpaqueRenderables", "sz_draw" )
 	end 
 end )
