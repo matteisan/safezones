@@ -5,7 +5,7 @@ function entmeta:InACFZone( name )
 
 	for i=1,table.Count(Zones.zones) do 
 		local zone = Zones.zones[i]
-		if not zone.acf then continue end 
+		if not zone.acf or tonumber(zone.acf) == 0 then continue end 
 		if name ~= nil and zone:Name() ~= name then continue end 
 
 		if inrange( pos, zone._truemin, zone._truemax ) then
@@ -33,7 +33,7 @@ if SERVER then
 	
 	hook.Add("ACF_FireShell", "SafeZone_FireShell", function( gun )
 		if gun:InACFZone() then return end 
-		if gun:InSafeZone() then
+		if gun:InSafeZone() then 
 			return false 
 		end 
 	end )
