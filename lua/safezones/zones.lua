@@ -195,7 +195,7 @@ end
 --[[ Other Various Helpers ]]-- 
 
 -- returns true if 'v' is within the points 
-local function inrange( v, min, max )
+function inrange( v, min, max )
 	if v.x < min.x then return false end 
 	if v.y < min.y then return false end 
 	if v.z < min.z then return false end 
