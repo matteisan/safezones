@@ -137,7 +137,7 @@ function ZONE:Draw()
 	local r, g, b = clr.r, clr.g, clr.b
 	
 	cam.Start3D2D( max, Angle(0,0,0), 1 ) 
-		surface.SetDrawColor( Color(r, g, b, 75) )
+		surface.SetDrawColor( Color(r, g, b, 25) )
 		
 		local x = ( b_tonumber(max.x < corners[4].x) * max:Distance(corners[4]) )
 		local y = ( b_tonumber(max.y > corners[3].y) * max:Distance(corners[3]) )
@@ -146,7 +146,7 @@ function ZONE:Draw()
 	cam.End3D2D()
 	
 	cam.Start3D2D( max, Angle(0,0,90), 1 )
-		surface.SetDrawColor(  Color(r, g, b, 100) )
+		surface.SetDrawColor(  Color(r, g, b, 45) )
 		
 		local x = ( b_tonumber(max.x < corners[4].x) * max:Distance(corners[4]) )
 		local y = ( b_tonumber(max.z > corners[2].z) * max:Distance(corners[2]) )
@@ -155,7 +155,7 @@ function ZONE:Draw()
 	cam.End3D2D()
 	
 	cam.Start3D2D( max, Angle(90,0,0), 1 )
-		surface.SetDrawColor( Color(r, g, b, 125) )
+		surface.SetDrawColor( Color(r, g, b, 65) )
 		
 		local x = ( b_tonumber(max.z > corners[2].z) * max:Distance(corners[2]) )
 		local y = ( b_tonumber(max.y > corners[3].y) * max:Distance(corners[3]) )
@@ -164,7 +164,7 @@ function ZONE:Draw()
 	cam.End3D2D()
 	
 	cam.Start3D2D( min, Angle(0,0,0), 1 ) 
-		surface.SetDrawColor( Color(r, g, b, 75) )
+		surface.SetDrawColor( Color(r, g, b, 25) )
 		
 		local x = ( b_tonumber(min.x < corners[7].x) * min:Distance(corners[7]) )
 		local y = ( b_tonumber(min.y > corners[6].y) * min:Distance(corners[6]) )
@@ -173,7 +173,7 @@ function ZONE:Draw()
 	cam.End3D2D()
 	
 	cam.Start3D2D( min, Angle(0,0,90), 1 ) 
-		surface.SetDrawColor( Color(r, g, b, 100) )
+		surface.SetDrawColor( Color(r, g, b, 45) )
 		
 		local x = ( b_tonumber(min.x < corners[7].x) * min:Distance(corners[7]) )
 		local y = ( b_tonumber(min.z > corners[5].z) * min:Distance(corners[5]) )
@@ -182,7 +182,7 @@ function ZONE:Draw()
 	cam.End3D2D()
 	
 	cam.Start3D2D( min, Angle(90,0,0), 1 ) 
-		surface.SetDrawColor( Color(r, g, b, 125) )
+		surface.SetDrawColor( Color(r, g, b, 65) )
 		
 		local x = ( b_tonumber(min.z > corners[5].z) * min:Distance(corners[5]) )
 		local y = ( b_tonumber(min.y > corners[6].y) * min:Distance(corners[6]) )
