@@ -1,6 +1,7 @@
 local entmeta = FindMetaTable("Entity")
 
 function entmeta:InACFZone( name )
+	if not IsValid( self ) then return end 
 	local pos = self:GetPos() 
 
 	for i=1,table.Count(Zones.zones) do 
